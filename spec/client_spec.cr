@@ -99,7 +99,7 @@ describe Pop3Client::Client do
     end
   end
 
-    it "lists one message" do
+  it "lists one message" do
     fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
     
     begin
@@ -108,6 +108,36 @@ describe Pop3Client::Client do
       client.login("user", "pass")
       list = client.list 2
       list.should eq(["500"])
+      client.quit
+    ensure
+      fake.close
+    end
+  end
+
+  it "lists all uids" do
+    fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
+    
+    begin
+      client = Pop3Client::Client.new("127.0.0.1", fake.port)
+      client.connect
+      client.login("user", "pass")
+      list = client.uidl
+      list.should eq(["1 UID1-1200", "2 UID2-500", "3 UID3-42"])
+      client.quit
+    ensure
+      fake.close
+    end
+  end
+
+  it "lists one uid" do
+    fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
+    
+    begin
+      client = Pop3Client::Client.new("127.0.0.1", fake.port)
+      client.connect
+      client.login("user", "pass")
+      list = client.uidl 1
+      list.should eq(["1 UID1-1200"])
       client.quit
     ensure
       fake.close

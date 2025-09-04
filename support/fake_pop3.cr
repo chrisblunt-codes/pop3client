@@ -13,7 +13,12 @@ module TestSupport
                    @valid_pass : String = "pass",
                    @stat_count : Int32 = 2,
                    @stat_octets : Int64 = 1234_i64,
-                   @messages : Array(Int32) = [1200, 500, 42])
+                   @messages : Array(Int32) = [1200, 500, 42],
+                   uids : Array(String) = [] of String)
+
+      @uids = (uids.size == @messages.size) ?
+                uids :
+                @messages.map_with_index { |size, i| "UID#{i + 1}-#{size}" }
 
       @server  = TCPServer.new "127.0.0.1", 0  # ephemeral port
       @port    = (@server.local_address.as(Socket::IPAddress)).port
@@ -97,11 +102,37 @@ module TestSupport
                 sock.puts "."
               end
             end
-
           else
             sock.puts "-ERR not authenticated"
           end
 
+          sock.flush
+        
+        when line.starts_with?("UIDL")
+          if authed
+            if @messages.empty?
+              sock.puts "+OK"
+              sock.puts "."
+            else
+              parts = line.split(" ")
+              if parts.size == 2
+                idx = parts[1].to_i
+                if idx >= 1 && idx <= @uids.size
+                  sock.puts "+OK #{idx} #{@uids[idx - 1]}"
+                else
+                  sock.puts "-ERR no such message"
+                end
+              else
+                sock.puts "+OK"
+                @uids.each_with_index do |uid, i|
+                  sock.puts "#{i + 1} #{uid}"
+                end
+                sock.puts "."
+              end
+            end
+          else
+            sock.puts "-ERR not authenticated"
+          end
           sock.flush
 
         when line.starts_with?("QUIT")

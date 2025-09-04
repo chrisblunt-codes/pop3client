@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - USER/PASS authentication (`Client#login`)
 - STAT support (`Client#stat`) returning `{count: Int32, octets: Int64}`
 - LIST support (`Client#list`) returning `Array(String)`
+- UIDL support (`Client#uidl`) returning `Array(String)`
 
 ### Changed
 - (nothing yet)
