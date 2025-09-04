@@ -1,0 +1,34 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.  
+This project adheres to [Semantic Versioning](https://semver.org/).
+
+## [Unreleased]
+### Added
+- (nothing yet)
+
+### Changed
+- (nothing yet)
+
+### Fixed
+- (nothing yet)
+
+---
+
+## [0.1.0] - 2025-09-04
+### Added
+- Connect to a POP3 server
+- Read greeting response (`+OK`)
+- Send `QUIT` and close connection
+- Basic error handling (`ProtocolError`, `ConnectionError`, etc.)
+- Minimal example and spec suite included
+
+---
+
+Copyright 2025 Chris Blunt  
+Licensed under the Apache License, Version 2.0
+
+---
+
+[Unreleased]: https://github.com/chrisblunt-codes/pop3client/compare/v0.1.0...HEAD  
+[0.1.0]: https://github.com/chrisblunt-codes/pop3client/releases/tag/v0.1.0
