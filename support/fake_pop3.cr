@@ -8,9 +8,12 @@ module TestSupport
     getter port : Int32
 
     def initialize(@greeting : String = "+OK test server",
-                  @quit_reply : String = "+OK bye",
-                  @valid_user : String = "user",
-                  @valid_pass : String = "pass")
+                   @quit_reply : String = "+OK bye",
+                   @valid_user : String = "user",
+                   @valid_pass : String = "pass",
+                   @stat_count : Int32 = 2,
+                   @stat_octets : Int64 = 1234_i64)
+
       @server  = TCPServer.new "127.0.0.1", 0  # ephemeral port
       @port    = (@server.local_address.as(Socket::IPAddress)).port
       @running = true
@@ -66,7 +69,15 @@ module TestSupport
           end
 
           sock.flush
+        
+        when line.starts_with?("STAT")
+          if authed
+            sock.puts "+OK #{@stat_count} #{@stat_octets}"
+          else
+            sock.puts "-ERR not authenticated"
+          end
 
+          sock.flush
         when line.starts_with?("QUIT")
           sock.puts @quit_reply
           sock.flush

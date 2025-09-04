@@ -5,7 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 ### Added
-- USER/PASS authentication (Client#login)
+- USER/PASS authentication (`Client#login`)
+- STAT support (`Client#stat`) returning `{count: Int32, octets: Int64}`.
 
 ### Changed
 - (nothing yet)

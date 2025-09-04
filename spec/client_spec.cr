@@ -54,4 +54,33 @@ describe Pop3Client::Client do
     client = Pop3Client::Client.new("127.0.0.1", 12345)
     expect_raises(Pop3Client::NotConnectedError) { client.login("user", "pass") }
   end
+
+  it "returns STAT after login" do
+    fake = TestSupport::FakePOP3.new("+OK hello", "+OK bye", "user", "pass", 5, 1234_i64)
+
+    begin
+      client = Pop3Client::Client.new("127.0.0.1", fake.port)
+      client.connect
+      client.login("user", "pass")
+      stat = client.stat
+      stat[:count].should eq 5
+      stat[:octets].should eq 1234_i64
+      client.quit
+    ensure
+      fake.close
+    end
+  end 
+
+  it "errors if stat when not authenticated" do
+    fake = TestSupport::FakePOP3.new("+OK hello", "+OK bye", "user", "pass")
+
+    begin
+      client = Pop3Client::Client.new("127.0.0.1", fake.port)
+      client.connect
+      expect_raises(Pop3Client::ProtocolError) { client.stat }
+      client.quit rescue nil
+    ensure
+      fake.close
+    end
+  end
 end

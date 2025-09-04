@@ -7,6 +7,5 @@ module Pop3Client
   class NotConnectedError     < Exception; end
   class Pop3Error             < Exception; end
   class ProtocolError         < Pop3Error; end
-  class AuthError             < Pop3Error; end
   class ResponseError         < Pop3Error; end
 end
