@@ -28,8 +28,11 @@ client.quit
 - [x] USER / PASS login
 - [x] STAT
 - [x] LIST
-- [ ] UIDL
-- [ ] RETR / TOP
+- [x] UIDL
+- [ ] RETR
+- [ ] TOP
+- [ ] DELE
+- [ ] RSET
 - [ ] TLS (STLS / direct)
 
 
