@@ -54,102 +54,114 @@ module TestSupport
         line = line.rstrip
 
         case
-        when line.starts_with?("USER")
-          user = line[5..]
-          seen_user = (user == @valid_user)
-          if seen_user
-            sock.puts "+OK user accepted"
-          else
-            sock.puts "-ERR no such user"
-          end
-          sock.flush
-
-        when line.starts_with?("PASS")
-          pass = line[5..]
-
-          if seen_user && (pass == @valid_pass)
-            authed = true
-            sock.puts "+OK password accepted"
-          else
-            sock.puts "-ERR invalid password"
-          end
-
-          sock.flush
-        
-        when line.starts_with?("STAT")
-          if authed
-            sock.puts "+OK #{@stat_count} #{@stat_octets}"
-          else
-            sock.puts "-ERR not authenticated"
-          end
-
-          sock.flush
-
-        when line.starts_with?("LIST")
-          if authed
-            if @messages.empty?
-              sock.puts "+OK 0 0"
-            else
-              msg = line.split(" ")[1]?.to_s
-              if msg != ""
-                sock.puts "+OK #{@messages[msg.to_i - 1]}"
-              else
-                sock.puts "+OK #{@messages.size} #{@messages.sum}"
-
-                @messages.each_with_index do |msg, idx|
-                  sock.puts "#{idx + 1} #{msg}"
-                end
-                sock.puts "."
-              end
-            end
-          else
-            sock.puts "-ERR not authenticated"
-          end
-
-          sock.flush
-        
-        when line.starts_with?("UIDL")
-          if authed
-            if @messages.empty?
-              sock.puts "+OK"
-              sock.puts "."
-            else
-              parts = line.split(" ")
-              if parts.size == 2
-                idx = parts[1].to_i
-                if idx >= 1 && idx <= @uids.size
-                  sock.puts "+OK #{idx} #{@uids[idx - 1]}"
-                else
-                  sock.puts "-ERR no such message"
-                end
-              else
-                sock.puts "+OK"
-                @uids.each_with_index do |uid, i|
-                  sock.puts "#{i + 1} #{uid}"
-                end
-                sock.puts "."
-              end
-            end
-          else
-            sock.puts "-ERR not authenticated"
-          end
-          sock.flush
-
-        when line.starts_with?("QUIT")
-          sock.puts @quit_reply
-          sock.flush
-
-        else
-          # default: say OK to unknown if authed, else -ERR
-          if authed
-            sock.puts "+OK"
-          else
-            sock.puts "-ERR not authenticated"  
-          end
-          sock.flush
+        when line.starts_with?("USER") then seen_user = handle_user(sock, line)
+        when line.starts_with?("PASS") then authed    = handle_pass(sock, line, seen_user)
+        when line.starts_with?("STAT") then handle_stat(sock, authed)
+        when line.starts_with?("LIST") then handle_list(sock, line, authed)
+        when line.starts_with?("UIDL") then handle_uidl(sock, line, authed)
+        when line.starts_with?("QUIT") then handle_quit(sock)
+        else handle_default(sock, authed)
         end
       end
+      
       sock.close rescue nil
+    end
+
+    # ---------------------------------------------------------------------
+    # Handlers
+    # ---------------------------------------------------------------------
+
+    private def handle_user(sock, line) : Bool
+      user = line[5..]
+      ok = (user == @valid_user)
+      sock.puts(ok ? "+OK user accepted" : "-ERR no such user")
+      sock.flush
+      ok
+    end
+
+    private def handle_pass(sock, line, seen_user : Bool) : Bool
+      pass = line[5..]
+      ok = seen_user && (pass == @valid_pass)
+      sock.puts(ok ? "+OK password accepted" : "-ERR invalid password")
+      sock.flush
+      ok
+    end
+
+    private def handle_stat(sock, authed : Bool)
+      if authed
+        sock.puts "+OK #{@stat_count} #{@stat_octets}"
+      else
+        sock.puts "-ERR not authenticated"
+      end
+
+      sock.flush
+    end
+
+    private def handle_list(sock, line, authed : Bool)
+      if authed
+        if @messages.empty?
+          sock.puts "+OK 0 0"
+        else
+          msg = line.split(" ")[1]?.to_s
+          if msg != ""
+            sock.puts "+OK #{@messages[msg.to_i - 1]}"
+          else
+            sock.puts "+OK #{@messages.size} #{@messages.sum}"
+
+            @messages.each_with_index do |msg, idx|
+              sock.puts "#{idx + 1} #{msg}"
+            end
+            sock.puts "."
+          end
+        end
+      else
+        sock.puts "-ERR not authenticated"
+      end
+
+      sock.flush
+    end
+
+    private def handle_uidl(sock, line, authed : Bool)
+      if authed
+        if @messages.empty?
+          sock.puts "+OK"
+          sock.puts "."
+        else
+          parts = line.split(" ")
+          if parts.size == 2
+            idx = parts[1].to_i
+            if idx >= 1 && idx <= @uids.size
+              sock.puts "+OK #{idx} #{@uids[idx - 1]}"
+            else
+              sock.puts "-ERR no such message"
+            end
+          else
+            sock.puts "+OK"
+            @uids.each_with_index do |uid, i|
+              sock.puts "#{i + 1} #{uid}"
+            end
+            sock.puts "."
+          end
+        end
+      else
+        sock.puts "-ERR not authenticated"
+      end
+      sock.flush
+    end
+
+    private def handle_quit(sock)
+      sock.puts @quit_reply
+      sock.flush
+    end
+
+    private def handle_default(sock, authed : Bool)
+      # default: say OK to unknown if authed, else -ERR
+      if authed
+        sock.puts "+OK"
+      else
+        sock.puts "-ERR not authenticated"  
+      end
+      sock.flush
     end
   end
 end
