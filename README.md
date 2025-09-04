@@ -25,8 +25,9 @@ client.quit
 ## Roadmap
 
 - [x] Connect and QUIT
-- [ ] USER / PASS login
-- [ ] STAT / LIST
+- [x] USER / PASS login
+- [x] STAT
+- [ ] LIST
 - [ ] UIDL
 - [ ] RETR / TOP
 - [ ] TLS (STLS / direct)
