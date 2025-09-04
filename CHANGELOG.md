@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 ### Added
-- (nothing yet)
+- USER/PASS authentication (Client#login)
 
 ### Changed
 - (nothing yet)

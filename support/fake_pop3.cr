@@ -8,7 +8,9 @@ module TestSupport
     getter port : Int32
 
     def initialize(@greeting : String = "+OK test server",
-                  @quit_reply : String = "+OK bye")
+                  @quit_reply : String = "+OK bye",
+                  @valid_user : String = "user",
+                  @valid_pass : String = "pass")
       @server  = TCPServer.new "127.0.0.1", 0  # ephemeral port
       @port    = (@server.local_address.as(Socket::IPAddress)).port
       @running = true
@@ -33,13 +35,50 @@ module TestSupport
     end
 
     private def handle_client(sock : TCPSocket)
+      authed    = false
+      seen_user = false
+
       sock.puts @greeting
       sock.flush
+
       while line = sock.gets
-        if line.starts_with?("QUIT")
+        line = line.rstrip
+
+        case
+        when line.starts_with?("USER")
+          user = line[5..]
+          seen_user = (user == @valid_user)
+          if seen_user
+            sock.puts "+OK user accepted"
+          else
+            sock.puts "-ERR no such user"
+          end
+          sock.flush
+
+        when line.starts_with?("PASS")
+          pass = line[5..]
+
+          if seen_user && (pass == @valid_pass)
+            authed = true
+            sock.puts "+OK password accepted"
+          else
+            sock.puts "-ERR invalid password"
+          end
+
+          sock.flush
+
+        when line.starts_with?("QUIT")
           sock.puts @quit_reply
           sock.flush
-          break
+          
+        else
+          # default: say OK to unknown if authed, else -ERR
+          if authed
+            sock.puts "+OK"
+          else
+            sock.puts "-ERR not authenticated"  
+          end
+          sock.flush
         end
       end
       sock.close rescue nil

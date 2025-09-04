@@ -35,4 +35,23 @@ describe Pop3Client::Client do
       fake.close
     end
   end
+
+  it "logs in with valid USER/PASS" do
+    fake = TestSupport::FakePOP3.new("+OK hello", valid_user: "bob", valid_pass: "password")
+
+    begin
+      client = Pop3Client::Client.new("127.0.0.1", fake.port)
+      client.connect
+      reply = client.login("bob", "password")
+      reply.should start_with("+OK")
+      client.quit
+    ensure
+      fake.close
+    end
+  end
+
+  it "errors if login without connect" do
+    client = Pop3Client::Client.new("127.0.0.1", 12345)
+    expect_raises(Pop3Client::NotConnectedError) { client.login("user", "pass") }
+  end
 end

@@ -33,6 +33,27 @@ module Pop3Client
       line
     end
 
+    def login(username : String, password : String) : String
+      raise NotConnectedError.new("Not connected") unless connected?
+
+      send_line "USER #{username}"
+      line = read_line
+      unless ok?(line)
+        close
+        raise ProtocolError.new("USER rejected: #{line}")
+      end
+
+      send_line "PASS #{password}"
+      line = read_line
+      unless ok?(line)
+        close
+        raise ProtocolError.new("PASS rejected:#{line}")
+      end
+      
+      @authenticated = true
+      line
+    end
+
     def connected? : Bool
       !@socket.nil?
     end
