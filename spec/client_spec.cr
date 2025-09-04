@@ -7,6 +7,9 @@ require "../support/fake_pop3"
 require "../src/pop3client"
 
 describe Pop3Client::Client do
+  
+  # ---- Connection ----
+
   it "connects and reads +OK greeting" do
     fake = TestSupport::FakePOP3.new("+OK hello")
     begin
@@ -36,6 +39,8 @@ describe Pop3Client::Client do
     end
   end
 
+   # ---- Auth ----
+
   it "logs in with valid USER/PASS" do
     fake = TestSupport::FakePOP3.new("+OK hello", valid_user: "bob", valid_pass: "password")
 
@@ -54,6 +59,8 @@ describe Pop3Client::Client do
     client = Pop3Client::Client.new("127.0.0.1", 12345)
     expect_raises(Pop3Client::NotConnectedError) { client.login("user", "pass") }
   end
+
+   # ---- STAT ----
 
   it "returns STAT after login" do
     fake = TestSupport::FakePOP3.new("+OK hello", "+OK bye", "user", "pass", 5, 1234_i64)
@@ -84,6 +91,8 @@ describe Pop3Client::Client do
     end
   end
 
+   # ---- LIST ----
+
   it "lists all messages" do
     fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
     
@@ -113,6 +122,8 @@ describe Pop3Client::Client do
       fake.close
     end
   end
+
+   # ---- UIDL ----
 
   it "lists all uids" do
     fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
