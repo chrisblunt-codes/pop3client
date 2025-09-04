@@ -1,0 +1,27 @@
+name: pop3client
+version: 0.1.0
+
+authors:
+  - Chris Blunt <contact@chrisblunt.codes>
+
+homepage: https://chrisblunt.codes
+
+description: Tiny POP3/POP3S client with streaming retrieval.
+
+license: Apache-2.0
+repository: https://github.com/chrisblunt-codes/pop3client
+crystal: ">= 1.17.0"
+
+targets:
+  pop3client:
+    main: src/pop3client.cr
+
+  basic_fetch:
+    main: examples/connect.cr
+
+development_dependencies:
+  spec:
+    github: crystal-lang/crystal-spec
+
+documentation: https://chrisblunt-codes.github.io/pop3client
+
