@@ -5,7 +5,7 @@ require "../src/pop3client"
 require "../support/fake_pop3"
 
 
-fake = TestSupport::FakePOP3.new("+OK hello", "+OK bye", "user", "pass")
+fake = TestSupport::FakePOP3.new(valid_user: "user", valid_pass: "pass")
 
 begin
   puts "Connecting to 127.0.0.1:#{fake.port}..."
