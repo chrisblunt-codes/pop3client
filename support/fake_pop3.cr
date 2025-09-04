@@ -12,7 +12,8 @@ module TestSupport
                    @valid_user : String = "user",
                    @valid_pass : String = "pass",
                    @stat_count : Int32 = 2,
-                   @stat_octets : Int64 = 1234_i64)
+                   @stat_octets : Int64 = 1234_i64,
+                   @messages : Array(Int32) = [1200, 500, 42])
 
       @server  = TCPServer.new "127.0.0.1", 0  # ephemeral port
       @port    = (@server.local_address.as(Socket::IPAddress)).port
@@ -78,10 +79,35 @@ module TestSupport
           end
 
           sock.flush
+
+        when line.starts_with?("LIST")
+          if authed
+            if @messages.empty?
+              sock.puts "+OK 0 0"
+            else
+              msg = line.split(" ")[1]?.to_s
+              if msg != ""
+                sock.puts "+OK #{@messages[msg.to_i - 1]}"
+              else
+                sock.puts "+OK #{@messages.size} #{@messages.sum}"
+
+                @messages.each_with_index do |msg, idx|
+                  sock.puts "#{idx + 1} #{msg}"
+                end
+                sock.puts "."
+              end
+            end
+
+          else
+            sock.puts "-ERR not authenticated"
+          end
+
+          sock.flush
+
         when line.starts_with?("QUIT")
           sock.puts @quit_reply
           sock.flush
-          
+
         else
           # default: say OK to unknown if authed, else -ERR
           if authed

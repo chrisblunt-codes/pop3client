@@ -83,4 +83,34 @@ describe Pop3Client::Client do
       fake.close
     end
   end
+
+  it "lists all messages" do
+    fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
+    
+    begin
+      client = Pop3Client::Client.new("127.0.0.1", fake.port)
+      client.connect
+      client.login("user", "pass")
+      list = client.list
+      list.should eq(["1 1200", "2 500", "3 42"])
+      client.quit
+    ensure
+      fake.close
+    end
+  end
+
+    it "lists one message" do
+    fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
+    
+    begin
+      client = Pop3Client::Client.new("127.0.0.1", fake.port)
+      client.connect
+      client.login("user", "pass")
+      list = client.list 2
+      list.should eq(["500"])
+      client.quit
+    ensure
+      fake.close
+    end
+  end
 end

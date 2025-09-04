@@ -27,7 +27,7 @@ client.quit
 - [x] Connect and QUIT
 - [x] USER / PASS login
 - [x] STAT
-- [ ] LIST
+- [x] LIST
 - [ ] UIDL
 - [ ] RETR / TOP
 - [ ] TLS (STLS / direct)
