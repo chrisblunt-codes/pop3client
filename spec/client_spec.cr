@@ -281,4 +281,21 @@ describe Pop3Client::Client do
       fake.close
     end
   end
+
+  # ---- RSET ----
+
+  it "resets all messages marked for deletion" do
+    fake = TestSupport::FakePOP3.new
+    
+    begin
+      client = Pop3Client::Client.new("127.0.0.1", fake.port)
+      client.connect
+      client.login("user", "pass")
+      line = client.rset
+      line.should start_with("+OK")
+      client.quit
+    ensure
+      fake.close
+    end
+  end
 end

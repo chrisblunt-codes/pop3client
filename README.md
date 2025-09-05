@@ -32,7 +32,7 @@ client.quit
 - [x] RETR
 - [x] TOP
 - [x] DELE
-- [ ] RSET
+- [x] RSET
 - [ ] TLS (STLS / direct)
 
 

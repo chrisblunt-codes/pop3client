@@ -9,9 +9,11 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - STAT support (`Client#stat`) returning `{count: Int32, octets: Int64}`
 - LIST support (`Client#list`) returning `Array(String)`
 - UIDL support (`Client#uidl`) returning `Array(String)`
-- RETR support (`Client#retr`) returning  `String`
-- TOP support (`Client#top`) returning  `String`
+- RETR support (`Client#retr`) returning `String`
+- TOP support  (`Client#top`)  returning `String`
 - DELE support (`Client#dele`) returning `String`
+- RSET support (`Client#rset`) returning `String`
+
 
 ### Changed
 - (nothing yet)

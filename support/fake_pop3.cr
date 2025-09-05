@@ -62,6 +62,7 @@ module TestSupport
         when line.starts_with?("RETR") then handle_retr(sock, line, authed)
         when line.starts_with?("TOP")  then handle_top(sock, line, authed)
         when line.starts_with?("DELE") then handle_dele(sock, line, authed)
+        when line.starts_with?("RSET") then handle_rset(sock, line, authed)
         when line.starts_with?("QUIT") then handle_quit(sock)
         else handle_default(sock, authed)
         end
@@ -248,6 +249,17 @@ module TestSupport
       end
 
       sock.puts "+OK message #{msg_num} deleted"
+      sock.flush
+    end
+
+    private def handle_rset(sock, line, authed : Bool)
+      unless authed
+        sock.puts "-ERR not authenticated"
+        sock.flush
+        return
+      end
+
+      sock.puts "+OK reset"
       sock.flush
     end
 
