@@ -10,7 +10,7 @@ module Pop3Client
         line = sock!.gets
         raise ProtocolError.new("No response to RETR") unless line
         line = line.rstrip
-        raise ProtocolError.new("No response to RETR") unless ok?(line)
+        raise ProtocolError.new("TOP rejected: #{line}") unless ok?(line)
         
         io = IO::Memory.new
         while(line = sock!.gets)
