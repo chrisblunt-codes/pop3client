@@ -3,6 +3,7 @@
 All notable changes to this project will be documented in this file.  
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+
 ## [Unreleased]
 ### Added
 - (nothing yet)
@@ -12,6 +13,12 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - (nothing yet)
+
+---
+
+## [0.2.1] - 2025-09-05
+### Added
+- API documentation via docstrings (viewable with `crystal docs`)
 
 ---
 
