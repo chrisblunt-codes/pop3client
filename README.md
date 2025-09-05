@@ -17,8 +17,16 @@ dependencies:
 ```crystal
 require "pop3client"
 
-client = Pop3Client::Client.new("pop3.example.com", 110)
+client = POP3::Client.new("mail.example.com", 110)
 client.connect
+client.login("user", "pass")
+stat = client.stat
+if stat[:count] > 0
+  list = client.list
+  list.each { |line| puts line }
+  msg = client.retr(1)
+  puts msg
+end
 client.quit
 ```
 
