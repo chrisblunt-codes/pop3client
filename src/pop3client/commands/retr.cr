@@ -1,6 +1,22 @@
 module Pop3Client
   module Commands
     module Retr
+      # Retrieves a full message from the POP3 server.
+      #
+      # Sends a `RETR` command for the given message number and returns the
+      # complete message text, including headers and body. Dot-stuffing is
+      # automatically removed.
+      #
+      # Arguments:
+      # * `msg` – the 1-based message number to retrieve.
+      #
+      # Returns:
+      # * A `String` containing the full message text with CRLF line endings.
+      #
+      # Raises:
+      # * NotConnectedError – if the client is not connected.
+      # * ProtocolError – if the client is not authenticated, the server
+      #   rejects the request, or the response is malformed.
       def retr(msg : Int32) : String
         raise NotConnectedError.new("Not connected") unless connected?
         raise ProtocolError.new("Not authenticated") unless authenticated?

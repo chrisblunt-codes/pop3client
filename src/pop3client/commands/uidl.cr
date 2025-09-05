@@ -1,6 +1,21 @@
 module Pop3Client
   module Commands
     module Uidl
+      # Retrieves unique message identifiers from the POP3 server.
+      #
+      # If a message number is given, returns the UID for that single message.
+      # Otherwise, returns a list of UIDs for all messages.
+      #
+      # Arguments:
+      # * `msg` – (optional) the 1-based message number.
+      #
+      # Returns:
+      # * For a single message: an `Array(String)` with one entry in the form `"n uid"`.
+      # * For all messages: an `Array(String)` where each entry is `"n uid"`.
+      #
+      # Raises:
+      # * NotConnectedError – if the client is not connected.
+      # * ProtocolError – if the client is not authenticated or the server rejects the command.
       def uidl(msg : Int32? = nil) : Array(String)
         raise NotConnectedError.new("Not connected") unless connected?
         raise ProtocolError.new("Not authenticated") unless authenticated?

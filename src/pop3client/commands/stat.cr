@@ -1,6 +1,20 @@
 module Pop3Client
   module Commands
     module Stat
+      # Retrieves mailbox statistics from the POP3 server.
+      #
+      # Sends the `STAT` command and returns the number of messages and the
+      # total size of the mailbox in octets.
+      #
+      # Returns:
+      # * A `NamedTuple(count: Int32, octets: Int64)` where:
+      #   * `count` – number of messages in the mailbox.
+      #   * `octets` – total size of all messages in octets.
+      #
+      # Raises:
+      # * NotConnectedError – if the client is not connected.
+      # * ProtocolError – if the client is not authenticated, the server
+      #   rejects the request, or the response is malformed.
       def stat : NamedTuple(count: Int32, octets: Int64)
         raise NotConnectedError.new("Not connected") unless connected?
         raise ProtocolError.new("Not authenticated") unless authenticated?
