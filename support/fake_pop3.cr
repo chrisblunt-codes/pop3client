@@ -59,6 +59,7 @@ module TestSupport
         when line.starts_with?("STAT") then handle_stat(sock, authed)
         when line.starts_with?("LIST") then handle_list(sock, line, authed)
         when line.starts_with?("UIDL") then handle_uidl(sock, line, authed)
+        when line.starts_with?("RETR") then handle_retr(sock, line, authed)
         when line.starts_with?("QUIT") then handle_quit(sock)
         else handle_default(sock, authed)
         end
@@ -146,6 +147,41 @@ module TestSupport
       else
         sock.puts "-ERR not authenticated"
       end
+      sock.flush
+    end
+
+    private def handle_retr(sock, line, authed : Bool)
+      unless authed
+        sock.puts "-ERR not authenticated"
+        sock.flush
+        return
+      end
+
+      msg = line.split(" ")[1]?.to_s
+      if msg == ""
+        sock.puts "-ERR no such message"
+        sock.flush
+        return
+      end
+
+      msg_num = msg.to_i
+      if msg.to_i < 1 || msg.to_i > @messages.size
+        sock.puts "-ERR no such message"
+        sock.flush
+        return
+      end
+
+      size = @messages[msg_num - 1]
+      message = <<-MSG
+From: test@example.com
+To: user@example.com
+Subject: Test message #{msg_num}
+
+This is the body of message #{msg_num}, size #{size} octets.
+MSG
+      sock.puts "+OK #{size} octets"
+      message.each_line { |l| sock.puts l.rstrip }
+      sock.puts "."
       sock.flush
     end
 

@@ -9,7 +9,7 @@ module Pop3Client
           # Single-line response: "+OK <msg> <size>"
           send_line "LIST #{msg}"
 
-          line = @socket.not_nil!.gets
+          line = sock!.gets
           raise ProtocolError.new("No response to LIST") unless line
           line = line.rstrip
 
@@ -21,13 +21,13 @@ module Pop3Client
           # Multi-line response: first status line, then "n size" lines, then "."
           send_line "LIST"
 
-          status = @socket.not_nil!.gets
+          status = sock!.gets
           raise ProtocolError.new("No response to LIST") unless status
           status = status.rstrip
           raise ProtocolError.new("LIST rejected: #{status}") unless ok?(status)
 
           lines = [] of String
-          while line = @socket.not_nil!.gets
+          while line = sock!.gets
             line = line.rstrip
             break if line == "."
             lines << line

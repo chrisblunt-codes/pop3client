@@ -9,7 +9,7 @@ module Pop3Client
           # Single-line response: "+OK <msg> <size>"
           send_line "UIDL #{msg}"
 
-          line = @socket.not_nil!.gets
+          line = sock!.gets
           raise ProtocolError.new("No response to UIDL") unless line
           line = line.rstrip
 
@@ -27,7 +27,7 @@ module Pop3Client
           raise ProtocolError.new("UIDL rejected: #{status}") unless ok?(status)
 
           lines = [] of String
-          while line = @socket.not_nil!.gets
+          while line = sock!.gets
             line = line.rstrip
             break if line == "."
             lines << line

@@ -154,4 +154,35 @@ describe Pop3Client::Client do
       fake.close
     end
   end
+
+  # ---- RETR ----
+
+  it "retrieves one message" do
+    fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
+    
+    begin
+      client = Pop3Client::Client.new("127.0.0.1", fake.port)
+      client.connect
+      client.login("user", "pass")
+      msg = client.retr 1
+      msg.includes?("Subject").should be_true
+      client.quit
+    ensure
+      fake.close
+    end
+  end
+
+  it "errors if retr and message not found" do
+    fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
+    
+    begin
+      client = Pop3Client::Client.new("127.0.0.1", fake.port)
+      client.connect
+      client.login("user", "pass")
+      expect_raises(Pop3Client::ProtocolError) { client.retr 100 }
+      client.quit
+    ensure
+      fake.close
+    end
+  end
 end

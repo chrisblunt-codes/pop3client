@@ -29,7 +29,7 @@ client.quit
 - [x] STAT
 - [x] LIST
 - [x] UIDL
-- [ ] RETR
+- [x] RETR
 - [ ] TOP
 - [ ] DELE
 - [ ] RSET
