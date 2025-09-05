@@ -186,6 +186,19 @@ describe Pop3Client::Client do
     end
   end
 
+  it "errors if RETR without authentication" do
+    fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
+    
+    begin
+      client = Pop3Client::Client.new("127.0.0.1", fake.port)
+      client.connect
+      expect_raises(Pop3Client::ProtocolError) { client.retr 100 }
+      client.quit
+    ensure
+      fake.close
+    end
+  end
+
   # ---- TOP ----
 
   it "shows first 5 lines of message for TOP 1 5" do
