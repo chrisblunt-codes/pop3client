@@ -60,6 +60,7 @@ module TestSupport
         when line.starts_with?("LIST") then handle_list(sock, line, authed)
         when line.starts_with?("UIDL") then handle_uidl(sock, line, authed)
         when line.starts_with?("RETR") then handle_retr(sock, line, authed)
+        when line.starts_with?("TOP")  then handle_top(sock, line, authed)
         when line.starts_with?("QUIT") then handle_quit(sock)
         else handle_default(sock, authed)
         end
@@ -172,15 +173,54 @@ module TestSupport
       end
 
       size = @messages[msg_num - 1]
-      message = <<-MSG
-From: test@example.com
-To: user@example.com
-Subject: Test message #{msg_num}
-
-This is the body of message #{msg_num}, size #{size} octets.
-MSG
       sock.puts "+OK #{size} octets"
+      message = test_message(msg_num, size)
       message.each_line { |l| sock.puts l.rstrip }
+      sock.puts "."
+      sock.flush
+    end
+
+    private def handle_top(sock, line, authed : Bool)
+      unless authed
+        sock.puts "-ERR not authenticated"
+        sock.flush
+        return
+      end
+
+      msg = line.split(" ")[1]?.to_s
+      if msg == ""
+        sock.puts "-ERR no such message"
+        sock.flush
+        return
+      end
+
+      msg_num = msg.to_i
+      if msg.to_i < 1 || msg.to_i > @messages.size
+        sock.puts "-ERR no such message"
+        sock.flush
+        return
+      end
+
+      max_lines = line.split(" ")[2]?.to_s
+      max_lines = if max_lines != ""
+                    max_lines.to_i
+                  else 
+                    100
+                  end
+
+      size = @messages[msg_num - 1]
+      sock.puts "+OK #{size} octets"
+
+      line_num = 1
+      message  = test_message(msg_num, size)
+      
+      message.each_line do |line|        
+        if line_num <= max_lines
+          sock.puts line.rstrip   
+        end
+        line_num += 1
+      end
+
       sock.puts "."
       sock.flush
     end
@@ -198,6 +238,27 @@ MSG
         sock.puts "-ERR not authenticated"  
       end
       sock.flush
+    end
+
+    # ---------------------------------------------------------------------
+    # Helpers
+    # ---------------------------------------------------------------------
+
+    private def test_message(msg_num : Int32 = 1, size : Int64 = 100_000) : String
+      <<-MSG
+From: test@example.com
+To: user@example.com
+Subject: Test message #{msg_num}
+
+I must not fear. Fear is the mind-killer. 
+Fear is the little-death that brings total obliteration.
+I will face my fear. I will permit it to pass over me and through me. 
+And when it has gone past I will turn the inner eye to see its path. 
+Where the fear has gone there will be nothing. 
+Only I will remain.
+
+This is the body of message #{msg_num}, size #{size} octets.
+MSG
     end
   end
 end

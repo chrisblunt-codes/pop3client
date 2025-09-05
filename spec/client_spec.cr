@@ -185,4 +185,43 @@ describe Pop3Client::Client do
       fake.close
     end
   end
+
+  # ---- TOP ----
+
+  it "shows first 5 lines of message for TOP 1 5" do
+    fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
+    
+    begin
+      client = Pop3Client::Client.new("127.0.0.1", fake.port)
+      client.connect
+      client.login("user", "pass")
+      msg = client.top(1, 5)
+
+      lines = msg.split("\n")
+      (lines.size - 1).should eq 5
+      (lines[0].starts_with?("From")).should be_true
+      (lines[1].starts_with?("To")).should be_true
+      client.quit
+    ensure
+      fake.close
+    end
+  end
+
+  it "shows first line of message for TOP 1 1" do
+    fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
+    
+    begin
+      client = Pop3Client::Client.new("127.0.0.1", fake.port)
+      client.connect
+      client.login("user", "pass")
+      msg = client.top(1, 1)
+
+      lines = msg.split("\n")
+      (lines.size - 1).should eq 1
+      (lines[0].starts_with?("From")).should be_true
+      client.quit
+    ensure
+      fake.close
+    end
+  end
 end

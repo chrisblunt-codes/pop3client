@@ -10,6 +10,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - LIST support (`Client#list`) returning `Array(String)`
 - UIDL support (`Client#uidl`) returning `Array(String)`
 - RETR support (`Client#retr`) returning  `String`
+- TOP support (`Client#top`) returning  `String`
 
 ### Changed
 - (nothing yet)

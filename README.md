@@ -30,7 +30,7 @@ client.quit
 - [x] LIST
 - [x] UIDL
 - [x] RETR
-- [ ] TOP
+- [x] TOP
 - [ ] DELE
 - [ ] RSET
 - [ ] TLS (STLS / direct)
