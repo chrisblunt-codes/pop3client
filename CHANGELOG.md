@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - UIDL support (`Client#uidl`) returning `Array(String)`
 - RETR support (`Client#retr`) returning  `String`
 - TOP support (`Client#top`) returning  `String`
+- DELE support (`Client#dele`) returning `String`
 
 ### Changed
 - (nothing yet)

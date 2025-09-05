@@ -61,6 +61,7 @@ module TestSupport
         when line.starts_with?("UIDL") then handle_uidl(sock, line, authed)
         when line.starts_with?("RETR") then handle_retr(sock, line, authed)
         when line.starts_with?("TOP")  then handle_top(sock, line, authed)
+        when line.starts_with?("DELE") then handle_dele(sock, line, authed)
         when line.starts_with?("QUIT") then handle_quit(sock)
         else handle_default(sock, authed)
         end
@@ -213,7 +214,7 @@ module TestSupport
 
       line_num = 1
       message  = test_message(msg_num, size)
-      
+
       message.each_line do |line|        
         if line_num <= max_lines
           sock.puts line.rstrip   
@@ -222,6 +223,31 @@ module TestSupport
       end
 
       sock.puts "."
+      sock.flush
+    end
+
+    private def handle_dele(sock, line, authed : Bool)
+      unless authed
+        sock.puts "-ERR not authenticated"
+        sock.flush
+        return
+      end
+
+      msg = line.split(" ")[1]?.to_s
+      if msg == ""
+        sock.puts "-ERR no such message"
+        sock.flush
+        return
+      end
+
+      msg_num = msg.to_i
+      if msg.to_i < 1 || msg.to_i > @messages.size
+        sock.puts "-ERR no such message"
+        sock.flush
+        return
+      end
+
+      sock.puts "+OK message #{msg_num} deleted"
       sock.flush
     end
 

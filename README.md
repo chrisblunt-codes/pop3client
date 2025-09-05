@@ -31,7 +31,7 @@ client.quit
 - [x] UIDL
 - [x] RETR
 - [x] TOP
-- [ ] DELE
+- [x] DELE
 - [ ] RSET
 - [ ] TLS (STLS / direct)
 

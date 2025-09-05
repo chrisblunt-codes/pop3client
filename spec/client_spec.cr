@@ -224,4 +224,48 @@ describe Pop3Client::Client do
       fake.close
     end
   end
+
+  # ---- DELE ----
+
+  it "deletes one message" do
+    fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
+    
+    begin
+      client = Pop3Client::Client.new("127.0.0.1", fake.port)
+      client.connect
+      client.login("user", "pass")
+      line = client.dele 1
+      line.should start_with("+OK")
+      client.quit
+    ensure
+      fake.close
+    end
+  end
+
+  it "errors if DELE and message not found" do
+    fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
+    
+    begin
+      client = Pop3Client::Client.new("127.0.0.1", fake.port)
+      client.connect
+      client.login("user", "pass")
+      expect_raises(Pop3Client::ProtocolError) { client.dele 100 }
+      client.quit
+    ensure
+      fake.close
+    end
+  end
+
+  it "errors if DELE without authentication" do
+    fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
+    
+    begin
+      client = Pop3Client::Client.new("127.0.0.1", fake.port)
+      client.connect
+      expect_raises(Pop3Client::ProtocolError) { client.dele 100 }
+      client.quit
+    ensure
+      fake.close
+    end
+  end
 end
