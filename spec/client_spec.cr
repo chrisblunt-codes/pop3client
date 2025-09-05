@@ -172,7 +172,7 @@ describe Pop3Client::Client do
     end
   end
 
-  it "errors if retr and message not found" do
+  it "errors if RETR and message not found" do
     fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
     
     begin
