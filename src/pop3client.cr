@@ -6,5 +6,5 @@ require "./pop3client/client"
 require "./pop3client/commands/*"
 
 module Pop3Client
-  VERSION = "0.1.0"
+  VERSION = "0.2.0"
 end

@@ -5,15 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 ### Added
-- USER/PASS authentication (`Client#login`)
-- STAT support (`Client#stat`) returning `{count: Int32, octets: Int64}`
-- LIST support (`Client#list`) returning `Array(String)`
-- UIDL support (`Client#uidl`) returning `Array(String)`
-- RETR support (`Client#retr`) returning `String`
-- TOP support  (`Client#top`)  returning `String`
-- DELE support (`Client#dele`) returning `String`
-- RSET support (`Client#rset`) returning `String`
-
+- (nothing yet)
 
 ### Changed
 - (nothing yet)
@@ -22,6 +14,17 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - (nothing yet)
 
 ---
+
+## [0.2.0] - 2025-09-05
+### Added
+- USER/PASS authentication (`Client#login`)
+- STAT support (`Client#stat`) returning `{count: Int32, octets: Int64}`
+- LIST support (`Client#list`) returning `Array(String)`
+- UIDL support (`Client#uidl`) returning `Array(String)`
+- RETR support (`Client#retr`) returning `String`
+- TOP support  (`Client#top`)  returning `String`
+- DELE support (`Client#dele`) returning `String`
+- RSET support (`Client#rset`) returning `String`
 
 ## [0.1.0] - 2025-09-04
 ### Added
