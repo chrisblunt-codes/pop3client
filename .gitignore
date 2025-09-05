@@ -15,6 +15,7 @@
 /*.a
 /*.o
 /bin/*
+/pop3client*
 
 # Editors
 *.swp
