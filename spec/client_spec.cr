@@ -172,6 +172,21 @@ describe Pop3Client::Client do
     end
   end
 
+    it "retrieves messages and applies dot unstuffing" do
+    fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
+    
+    begin
+      client = Pop3Client::Client.new("127.0.0.1", fake.port)
+      client.connect
+      client.login("user", "pass")
+      msg = client.retr 1
+      msg.includes?("..").should be_false
+      client.quit
+    ensure
+      fake.close
+    end
+  end
+
   it "errors if RETR and message not found" do
     fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
     
@@ -220,6 +235,21 @@ describe Pop3Client::Client do
     end
   end
 
+  it "shows first 5 lines of message for TOP 1 5 with dot unstuffing" do
+    fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
+    
+    begin
+      client = Pop3Client::Client.new("127.0.0.1", fake.port)
+      client.connect
+      client.login("user", "pass")
+      msg = client.top(1, 5)
+      msg.includes?("..").should be_false
+      client.quit
+    ensure
+      fake.close
+    end
+  end
+  
   it "shows first line of message for TOP 1 1" do
     fake = TestSupport::FakePOP3.new(messages: [1200, 500, 42])
     

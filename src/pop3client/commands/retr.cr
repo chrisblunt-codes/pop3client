@@ -16,6 +16,10 @@ module Pop3Client
         while(line = sock!.gets)
           line = line.rstrip
           break if line == "."
+          
+          # Unstuff: if the line begins with "..", drop the first dot
+          line = line[1..] if line.starts_with?("..")
+          
           io << line << "\r\n"
         end
 
