@@ -16,6 +16,12 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.3.0] - 2025-09-18
+### Added
+- Switched to MIT license
+
+---
+
 ## [0.2.1] - 2025-09-05
 ### Added
 - API documentation via docstrings (viewable with `crystal docs`)
@@ -44,7 +50,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ---
 
 Copyright 2025 Chris Blunt  
-Licensed under the Apache License, Version 2.0
+Licensed under the MIT License
 
 ---
 
