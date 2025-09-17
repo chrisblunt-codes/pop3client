@@ -59,7 +59,9 @@ client.quit
 
 ## License
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Copyright 2025 Chris Blunt
-Licensed under the Apache License, Version 2.0
-SPDX-License-Identifier: Apache-2.0
+Licensed under the MIT License
+SPDX-License-Identifier: MIT
 
