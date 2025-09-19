@@ -1,3 +1,5 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # pop3client
 
 A tiny POP3 client for Crystal.
@@ -58,8 +60,6 @@ client.quit
 
 
 ## License
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Copyright 2025 Chris Blunt
 Licensed under the MIT License
