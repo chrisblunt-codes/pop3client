@@ -1,4 +1,5 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Crystal](https://img.shields.io/badge/Crystal-1.17-blue)
 
 # pop3client
 
